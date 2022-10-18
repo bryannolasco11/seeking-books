@@ -14,12 +14,14 @@ const SignupForm = () => {
     email: '', 
     password: '' });
 
-  const [createUser, { error }] = useMutation(ADD_USER);
+ 
 
   // set state for form validation
   const [validated] = useState(false);
   // set state for alert
   const [showAlert, setShowAlert] = useState(false);
+
+ const [addUser, { error }] = useMutation(ADD_USER);
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -46,11 +48,13 @@ const SignupForm = () => {
     //   }
 
     try {
-      const { response } = await createUser({
+      const { data } = await addUser({
         variables: { ...userFormData },
+      
       });
-
-      Auth.login(response.createUser.token);
+      console.log(data)
+      Auth.login(data.addUser.token)
+     // Auth.login(response.createUser.token);
     } catch (e) {
       console.error(e);
     }
