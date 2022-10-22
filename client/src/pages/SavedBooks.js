@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Jumbotron, Container, CardColumns, Card, Button } from 'react-bootstrap';
 
 //import { getMe, deleteBook } from '../utils/API';
@@ -14,10 +14,13 @@ const SavedBooks = () => {
   // loading briefly shows loading <div>
   // data populates
   const { loading, data } = useQuery(GET_ME);
+  console.log(data)
 
   const userData = data?.me || [];
+  console.log(userData);
 
-  const [removeBook, {error}] = useMutation(REMOVE_BOOK);
+  const [removeBook] = useMutation(REMOVE_BOOK);
+  console.log([removeBook])
 
   // use this to determine if `useEffect()` hook needs to run again
   // const userDataLength = Object.keys(userData).length;
@@ -56,7 +59,8 @@ const SavedBooks = () => {
     }
 
     try {
-      const data = await removeBook({
+      console.log(bookId)
+      await removeBook({
         variables: { bookId },
       })
 
@@ -87,12 +91,12 @@ const SavedBooks = () => {
       </Jumbotron>
       <Container>
         <h2>
-          {userData.savedBooks.length
+          {userData.savedBooks?.length
             ? `Viewing ${userData.savedBooks.length} saved ${userData.savedBooks.length === 1 ? 'book' : 'books'}:`
             : 'You have no saved books!'}
         </h2>
         <CardColumns>
-          {userData.savedBooks.map((book) => {
+          {userData.savedBooks?.map((book) => {
             return (
               <Card key={book.bookId} border='dark'>
                 {book.image ? <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' /> : null}
@@ -100,7 +104,9 @@ const SavedBooks = () => {
                   <Card.Title>{book.title}</Card.Title>
                   <p className='small'>Authors: {book.authors}</p>
                   <Card.Text>{book.description}</Card.Text>
-                  <Button className='btn-block btn-danger' onClick={() => handleDeleteBook(book.bookId)}>
+                  <Button className='btn-block btn-danger' onClick={() => {
+                    console.log(book)
+                    handleDeleteBook(book.bookId)}}>
                     Delete this Book!
                   </Button>
                 </Card.Body>
